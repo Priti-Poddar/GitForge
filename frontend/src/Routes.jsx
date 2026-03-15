@@ -10,7 +10,7 @@ import Signup from './components/auth/Signup';
 import Login from './components/auth/Login';
 import Explore from './components/explore/Explore';
 import Settings from './components/user/Settings';
-import CreateRepo from './components/repo/Createrepo';
+import CreateRepo from "./components/repo/CreateRepo";
 import RepoDetail from './components/repo/RepoDetails';
 import PublicRepoView from "./components/repo/PublicRepoView";
 // Issue pages
