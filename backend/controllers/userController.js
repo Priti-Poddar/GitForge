@@ -31,26 +31,31 @@ const signup = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const newUser = {
-      username,
-      password: hashedPassword,
-      email,
-      repositories: [],
-      followedUsers: [],
-      starRepos: [],
-    };
+   const newUser = {
+     username,
+     password: hashedPassword,
+     email,
+     name: "", // 
+     bio: "",
+     location: "",
+     website: "",
+     avatar: "",
+     repositories: [],
+     followedUsers: [],
+     starRepos: [],
+   };
 
     const result = await userCollection.insertOne(newUser);
 
     const token = jwt.sign(
-      { id: result.insertId },
+      { id: result.insertedId },
       process.env.JWT_SECRET_KEY,
-      { expiresIn: "1h" }
+      { expiresIn: "1h" },
     );
-    res.json({ token, userId:result.insertId });
+    res.json({ token, userId: result.insertedId });
   } catch (err) {
     console.error("Error during signup: ", err.message);
-    res.status(500).send("Server error");
+     res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -116,35 +121,49 @@ const getUserProfile = async (req, res) => {
 
 async function updateUserProfile(req, res) {
   const currentID = req.params.id;
-  const { email, password } = req.body;
+  const { name, bio, location, website, email } = req.body;
 
   try {
+    if (!ObjectId.isValid(currentID)) {
+      return res.status(400).json({ message: "Invalid user ID!" });
+    }
     await connectClient();
     const db = client.db("githubclone");
     const usersCollection = db.collection("users");
 
-    let updateFields = { email };
-    if (password) {
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
-      updateFields.password = hashedPassword;
+    // Only update fields that were actually sent
+    const updateFields = {};
+    if (name !== undefined) updateFields.name = name.trim();
+    if (bio !== undefined) updateFields.bio = bio.trim();
+    if (location !== undefined) updateFields.location = location.trim();
+    if (website !== undefined) updateFields.website = website.trim();
+    if (email !== undefined) updateFields.email = email.trim();
+
+    // If email is changing, check it's not taken by someone else
+    if (email) {
+      const emailTaken = await usersCollection.findOne({
+        email: email.trim(),
+        _id: { $ne: new ObjectId(currentID) },
+      });
+      if (emailTaken) {
+        return res.status(409).json({ message: "Email already in use!" });
+      }
     }
 
     const result = await usersCollection.findOneAndUpdate(
-      {
-        _id: new ObjectId(currentID),
-      },
+      { _id: new ObjectId(currentID) },
       { $set: updateFields },
-      { returnDocument: "after" },
+      { returnDocument: "after", projection: { password: 0 } }, // ✅ never return password
     );
-    if (!result.value) {
+
+    if (!result) {
       return res.status(404).json({ message: "User not found!" });
     }
 
-    res.send(result.value);
+    res.json({ message: "Profile updated successfully!", user: result });
   } catch (err) {
-    console.error("Error during updating : ", err.message);
-    res.status(500).send("Server error!");
+    console.error("Error during updating:", err.message);
+    res.status(500).json({ message: "Server error" }); // ✅ JSON not plain text
   }
 }
 
@@ -176,6 +195,6 @@ module.exports = {
   signup,
   login,
   getUserProfile,
-  updateUserProfile,
+  updateUserProfile, 
   deleteUserProfile,
 };

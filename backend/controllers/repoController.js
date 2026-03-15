@@ -26,13 +26,17 @@ async function createRepository(req, res) {
 
     const result = await newRepository.save();
 
+    await User.findByIdAndUpdate(owner, {
+      $push: { repositories: result._id },
+    });
+
     res.status(201).json({
       message: "Repository created!",
       repositoryID: result._id,
     });
   } catch (err) {
     console.error("Error during repository creation : ", err.message);
-    res.status(500).send("Server error");
+    res.status(500).json({ error: "Server error" });
   }
 }
 
@@ -78,26 +82,23 @@ async function fetchRepositoryByName(req, res) {
 }
 
 async function fetchRepositoriesForCurrentUser(req, res) {
-  console.log(req.params);
   const { userID } = req.params;
-
   try {
     const repositories = await Repository.find({ owner: userID });
-
-    if (!repositories || repositories.length == 0) {
-      return res.status(404).json({ error: "User Repositories not found!" });
-    }
-    console.log(repositories);
-    res.json({ message: "Repositories found!", repositories });
+    // ✅ always return 200 with empty array — never 404 for empty results
+    res.json({
+      message: "Repositories found!",
+      repositories: repositories ?? [],
+    });
   } catch (err) {
-    console.error("Error during fetching user repositories : ", err.message);
-    res.status(500).send("Server error");
+    console.error("Error fetching user repositories:", err.message);
+    res.status(500).json({ error: "Server error" }); // ✅ JSON not plain text
   }
 }
 
 async function updateRepositoryById(req, res) {
   const { id } = req.params;
-  const { content, description } = req.body;
+  const { name, content, description } = req.body;
 
   try {
     const repository = await Repository.findById(id);
@@ -105,8 +106,10 @@ async function updateRepositoryById(req, res) {
       return res.status(404).json({ error: "Repository not found!" });
     }
 
-    repository.content.push(content);
-    repository.description = description;
+
+    if (name !== undefined) repository.name = name.trim();
+    if (description !== undefined) repository.description = description.trim();
+    if (content !== undefined) repository.content.push(content);
 
     const updatedRepository = await repository.save();
 
@@ -137,7 +140,7 @@ async function toggleVisibilityById(req, res) {
       message: "Repository visibility toggled successfully!",
       repository: updatedRepository,
     });
-  } catch (err) {
+  } catch (err) { 
     console.error("Error during toggling visibility : ", err.message);
     res.status(500).send("Server error");
   }

@@ -1,0 +1,451 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap");
+
+:root {
+  --teal: #87b6bc;
+  --teal-light: #b3d4d8;
+  --teal-dark: #5e9199;
+  --sage: #bed4cb;
+  --sage-light: #d9e9e4;
+  --sage-dark: #91b5a9;
+  --yellow: #f6f09f;
+  --yellow-dark: #d4c94a;
+  --rose: #b35656;
+  --rose-light: #cc7f7f;
+  --rose-pale: #f5e5e5;
+
+  --bg: #f4f7f6;
+  --bg-card: #ffffff;
+  --bg-muted: #eef4f2;
+  --text-dark: #1e2d2b;
+  --text-mid: #4a6360;
+  --text-muted: #8aada8;
+  --border: #d2e4e0;
+  --border-soft: #e8f2ef;
+
+  --shadow-sm: 0 1px 4px rgba(135, 182, 188, 0.1);
+  --shadow-card:
+    0 2px 14px rgba(135, 182, 188, 0.13), 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-hover:
+    0 6px 24px rgba(135, 182, 188, 0.22), 0 2px 6px rgba(0, 0, 0, 0.06);
+  --radius: 14px;
+  --radius-sm: 8px;
+  --ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ── Page shell ── */
+.create-repo-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 44px 24px 64px;
+  font-family: "DM Sans", sans-serif;
+}
+
+/* decorative blobs */
+.create-repo-page::before {
+  content: "";
+  position: fixed;
+  top: 10%;
+  right: 5%;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(246, 240, 159, 0.18) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Page heading ── */
+.create-repo-page h1 {
+  font-family: "Playfair Display", serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  letter-spacing: -0.5px;
+  position: relative;
+  z-index: 1;
+}
+
+.create-repo-page h1 svg {
+  stroke: var(--teal-dark);
+  flex-shrink: 0;
+}
+
+.create-repo-subtitle {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 36px;
+  padding-left: 34px; /* align with title text */
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Form ── */
+.create-repo-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.form-section {
+  padding: 28px 0;
+  border-bottom: 1.5px solid var(--border-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-section:last-of-type {
+  border-bottom: none;
+}
+
+.form-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: -6px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* ── Field ── */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.form-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-dark);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.form-field label .required {
+  color: var(--rose);
+}
+
+.form-field label .optional {
+  color: var(--text-muted);
+  font-weight: 400;
+  font-size: 12px;
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  padding: 8px 12px;
+  background: rgba(190, 212, 203, 0.2);
+  border-left: 3px solid var(--sage-dark);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.hint strong {
+  color: var(--teal-dark);
+  font-family: "DM Mono", monospace;
+}
+
+/* ── Inputs ── */
+.form-input {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  color: var(--text-dark);
+  font-size: 14px;
+  font-family: "DM Sans", sans-serif;
+  width: 100%;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.form-input::placeholder {
+  color: var(--text-muted);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--teal);
+  box-shadow:
+    0 0 0 3px rgba(135, 182, 188, 0.18),
+    var(--shadow-sm);
+  background: #fff;
+}
+
+.form-input.error {
+  border-color: var(--rose);
+  box-shadow: 0 0 0 3px rgba(179, 86, 86, 0.1);
+}
+
+.form-input-mono {
+  font-family: "DM Mono", monospace;
+  font-size: 13px;
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 88px;
+  line-height: 1.6;
+}
+
+/* custom select arrow */
+select.form-input {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238aada8' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+  cursor: pointer;
+}
+
+.form-error-msg {
+  font-size: 12px;
+  color: var(--rose);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  background: var(--rose-pale);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(179, 86, 86, 0.25);
+}
+
+/* ── Submit error alert ── */
+.form-submit-error {
+  padding: 11px 16px;
+  background: var(--rose-pale);
+  border: 1.5px solid rgba(179, 86, 86, 0.3);
+  border-radius: var(--radius-sm);
+  color: var(--rose);
+  font-size: 13px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Visibility cards ── */
+.visibility-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.visibility-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+  box-shadow: var(--shadow-sm);
+}
+
+.visibility-card:hover {
+  border-color: var(--teal-light);
+  background: var(--bg-muted);
+  transform: translateX(3px);
+}
+
+.visibility-card.selected {
+  border-color: var(--teal);
+  background: rgba(135, 182, 188, 0.06);
+  box-shadow:
+    0 0 0 3px rgba(135, 182, 188, 0.15),
+    var(--shadow-sm);
+}
+
+.visibility-card input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  margin-top: 3px;
+  accent-color: var(--teal-dark);
+  flex-shrink: 0;
+}
+
+.visibility-card-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  line-height: 1;
+}
+
+.visibility-card-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 3px;
+}
+
+.visibility-card.selected .visibility-card-label {
+  color: var(--teal-dark);
+}
+
+.visibility-card-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* ── Init options (checkbox row) ── */
+.init-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.init-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  padding: 14px 16px;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.init-option:hover {
+  border-color: var(--teal-light);
+  background: var(--bg-muted);
+}
+
+.init-option input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  accent-color: var(--teal-dark);
+  flex-shrink: 0;
+}
+
+.init-option-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.init-option-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.init-option-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* ── Submit row ── */
+.form-submit-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 28px;
+}
+
+.btn-create {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--teal);
+  color: #fff;
+  border: none;
+  padding: 11px 26px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: "DM Sans", sans-serif;
+  cursor: pointer;
+  transition: all 0.22s var(--ease);
+  box-shadow: 0 2px 12px rgba(135, 182, 188, 0.35);
+  letter-spacing: 0.01em;
+}
+
+.btn-create:hover:not(:disabled) {
+  background: var(--teal-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(135, 182, 188, 0.45);
+}
+
+.btn-create:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-cancel {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1.5px solid var(--border);
+  padding: 10px 18px;
+  font-size: 14px;
+  font-family: "DM Sans", sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: var(--radius-sm);
+}
+
+.btn-cancel:hover {
+  color: var(--text-dark);
+  background: var(--bg-muted);
+  border-color: var(--teal-light);
+}
+
+/* ── Divider ── */
+.form-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.form-divider::before,
+.form-divider::after {
+  content: "";
+  flex: 1;
+  height: 1.5px;
+  background: var(--border-soft);
+  border-radius: 2px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .create-repo-page {
+    padding: 28px 16px 48px;
+  }
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  .create-repo-page h1 {
+    font-size: 22px;
+  }
+  .create-repo-subtitle {
+    padding-left: 0;
+  }
+}
